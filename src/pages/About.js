@@ -1,0 +1,6 @@
+import React from "react";
+
+const About = () => {
+    return <h1>About 화면 입니닷</h1>
+}
+export default About;
