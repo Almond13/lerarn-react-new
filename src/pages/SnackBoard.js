@@ -4,9 +4,12 @@ import axios from 'axios'
 const SnackBoard = () => {
   const [list, setList] = useState([])
   const [page, setPage] = useState(1)
-  const limit = 5
+  const [limit, setLimit] = useState(5)
   const offset = (page - 1) * limit
   const [total, setTotal] = useState(0)
+  const [searchName, setSearchName] = useState('')
+  const [filteredList, setFilteredList] = useState([])
+  const [searchType, setSearchType] = useState('snack')
 
   const Lists = ({ listData }) => {
     return (
@@ -23,18 +26,33 @@ const SnackBoard = () => {
     try {
       const { data } = await axios.get('http://localhost:3000/data/snackData.json')
       setList(data)
+      setFilteredList(data)
       const paging = data.length
       setTotal(paging)
     } catch (err) {}
   }
 
+  // 페이지 자르기
   const sliceList = (list) => {
     return list.slice(offset, offset + limit)
   }
+
+  //검색 기능
+  const filterList = list.filter((item) => {
+    const target = item[searchType]
+    return String(target).includes(searchName)
+  })
+
+  const searchButton = () => {
+    setFilteredList(filterList)
+    setTotal(filterList.length)
+  }
+
+  // 페이지네이션 컴포넌트
   const Pagination = ({ total, limit, page, setPage }) => {
     const numPage = Math.ceil(total / limit)
     return (
-      <div>
+      <div className="select">
         <button onClick={() => setPage(page - 1)} disabled={page === 1}>
           &lt;
         </button>
@@ -56,12 +74,31 @@ const SnackBoard = () => {
     )
   }
 
+  // 리스트 수 조절 컴포넌트
+  const SelectNum = () => {
+    return (
+      <label>
+        <select
+          className="select"
+          value={limit}
+          onChange={({ target: { value } }) => setLimit(Number(value))}
+        >
+          <option value="5">5개 보기</option>
+          <option value="10">10개 보기</option>
+          <option value="15">15개 보기</option>
+          <option value="20">20개 보기</option>
+        </select>
+      </label>
+    )
+  }
+
   useEffect(() => {
     getList()
   }, [])
 
   return (
-    <div>
+    <div className="App">
+      <SelectNum />
       <table>
         <thead>
           <tr>
@@ -73,12 +110,29 @@ const SnackBoard = () => {
           </tr>
         </thead>
         <tbody style={{ textAlign: 'center' }}>
-          {sliceList(list).map((item) => (
-            <Lists listData={item} key={item.id} />
-          ))}
+          {filteredList.length === 0 ? (
+            <tr>
+              <td>검색 결과가 없습니다.</td>
+            </tr>
+          ) : (
+            sliceList(filteredList).map((item) => <Lists listData={item} key={item.id} />)
+          )}
         </tbody>
       </table>
       <Pagination total={total} limit={limit} page={page} setPage={setPage} />
+      <label>
+        <select
+          value={searchType}
+          onChange={({ target: { value } }) => {
+            setSearchType(String(value))
+          }}
+        >
+          <option value="sanck">과자 이름</option>
+          <option value="brand">브랜드</option>
+        </select>
+        <input value={searchName} onChange={(e) => setSearchName(e.target.value)} />
+        <button onClick={searchButton}>검색</button>
+      </label>
     </div>
   )
 }
