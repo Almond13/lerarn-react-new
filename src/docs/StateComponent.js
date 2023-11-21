@@ -109,6 +109,7 @@ const Gallery = () => {
   let sculpture = sculptureList[index]
   return (
     <div>
+      <h1>Adding a state variable</h1>
       <button onClick={handleClick} disabled={index + 1 === sculptureList.length}>
         Next
       </button>
@@ -124,8 +125,117 @@ const Gallery = () => {
     </div>
   )
 }
+
+// Giving a component multiple state variables & State is isolated and private
+// 상태는 구성 요소에만 적용되며 두 위치에서 렌더링하는 경우 각 복사본은 고유한 상태를 갖는다.
+const MultiGallery = () => {
+  const [index, setIndex] = useState(0)
+  const [showMore, setShowMore] = useState(false)
+
+  let hasNext = index < sculptureList.length - 1
+  function handleNextClick() {
+    if (hasNext) {
+      setIndex(index + 1)
+    }
+  }
+
+  function handleMoreClick() {
+    // !는 참을 거짓으로 만들고 거짓은 참으로 만든다.
+    setShowMore(!showMore)
+  }
+
+  let sculpture = sculptureList[index]
+  return (
+    <>
+      <button onClick={handleNextClick} disabled={!hasNext}>
+        Next
+      </button>
+      <h2>
+        <i>{sculpture.name}</i> by {sculpture.artist}
+      </h2>
+      <h3>
+        ({index + 1} of {sculptureList.length})
+      </h3>
+      <button
+        onClick={handleMoreClick}
+        style={{ display: 'block', marginTop: '10px', marginBottom: '10px' }}
+      >
+        {showMore ? 'Hide' : 'Show'} details
+      </button>
+      {showMore && <p>{sculpture.description}</p>}
+      <img src={sculpture.url} alt={sculpture.alt} />
+    </>
+  )
+}
+
+// Fix stuck form inputs
+const Form = () => {
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+
+  function handleFirstNameChange(e) {
+    setFirstName(e.target.value)
+  }
+
+  function handleLastNameChange(e) {
+    setLastName(e.target.value)
+  }
+
+  function handleReset() {
+    setFirstName('')
+    setLastName('')
+  }
+
+  return (
+    <form onSubmit={(e) => e.preventDefault()}>
+      <h1>Fix stuck form inputs</h1>
+      <input placeholder="First name" value={firstName} onChange={handleFirstNameChange} />
+      <input placeholder="Last name" value={lastName} onChange={handleLastNameChange} />
+      <h1>
+        Hi, {firstName} {lastName}
+      </h1>
+      <button onClick={handleReset}>Reset</button>
+    </form>
+  )
+}
+
+// Remove unnecessary state
+const FeedbackForm = () => {
+  // const [name, setName] = useState('')
+  //
+  // function handleClick() {
+  //   setName(prompt('What is your name?'))
+  //   alert(`Hello, ${name}!`)
+  // }
+  function handleClick() {
+    const name = prompt('What is your name?')
+    alert(`Hello, ${name}!`)
+  }
+
+  return (
+    <div>
+      <h1>Remove unnecessary state</h1>
+      <button onClick={handleClick}>Greet</button>
+    </div>
+  )
+}
+
 const StateComponent = () => {
-  return <Gallery />
+  return (
+    <div>
+      <Gallery />
+      <br />
+      <h1>Giving a component multiple state variables</h1>
+      <MultiGallery />
+      <br />
+      <h1>State is isolated and private</h1>
+      <MultiGallery />
+      <br />
+      <Form />
+      <br />
+      <FeedbackForm />
+    </div>
+  )
 }
 
 export default StateComponent
