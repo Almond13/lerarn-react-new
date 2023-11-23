@@ -104,7 +104,7 @@ const SnackBoard = () => {
       navigate(`/snack-board/${newPage}`, { replace: true })
     }
     getList()
-  }, [total, page, limit, navigate])
+  }, [page, limit, navigate])
 
   return (
     <div className="board">
