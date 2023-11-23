@@ -16,10 +16,13 @@ code {
   padding: 20px;
 }
 
+/*기본 스타일*/
 .board{
   display: grid;
   grid-auto-flow: column;
   grid-template-rows: 1fr 3fr 1fr 1fr;
+  align-items: center;
+  max-height: 600px;
 }
 
 .board label {
@@ -30,10 +33,38 @@ code {
   justify-self: center;
 }
 
-.table-container {
+/*테이블 스타일*/
+.table-container table{
   display: grid;
+  align-items: center;
+  border: 1px solid #ccc;
 }
 
+.table-container thead{
+  padding: 5px 0;
+}
+
+.table-container tbody{
+  text-align: center;
+  vertical-align: middle
+}
+
+.table-container td{
+  border-top: 1px solid #ccc;
+}
+
+/*검색 결과가 있을때*/
+.table-container .result, .table-container thead tr{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr) 3fr 1fr;
+}
+
+/*검색 결과가 없을때*/
+.table-container .no-result{
+  display:grid;
+}
+
+/*검색창 스타일*/
 .board .select {
   margin: 10px 5px 10px 0;
 }
@@ -42,3 +73,23 @@ code {
   margin: 0 3px;
 }
 
+/*pagination 스타일*/
+.pagination-link{
+  text-decoration: none;
+  padding: 2px 4px;
+  margin: 2px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+}
+
+.disabled {
+  pointer-events: none;
+  color: #ccc
+}
+
+.pagination-link.active {
+  background-color: #ccc;
+}

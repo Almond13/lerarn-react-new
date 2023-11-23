@@ -1,3 +1,4 @@
+// App.js
 import React from 'react'
 import { Routes, Route, Link } from 'react-router-dom'
 
@@ -8,11 +9,12 @@ function App() {
   return (
     <div className="App">
       <nav>
-        <Link to="/">Home</Link> | <Link to="/SnackBoard">Snack Board</Link>
+        <Link to="/">Home</Link> | <Link to="/snack-board/1">Snack Board</Link>
       </nav>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/SnackBoard" element={<SnackBoard />} />
+        <Route path="/snack-board" element={<SnackBoard />} />
+        <Route path="/snack-board/:page" element={<SnackBoard />} />
       </Routes>
     </div>
   )

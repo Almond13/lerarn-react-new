@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 
 const SnackBoard = () => {
+  const navigate = useNavigate()
+  const { page } = useParams()
   const [list, setList] = useState([])
-  const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(5)
   const offset = (page - 1) * limit
   const [total, setTotal] = useState(0)
@@ -13,7 +15,7 @@ const SnackBoard = () => {
 
   const Lists = ({ listData }) => {
     return (
-      <tr style={{ padding: 0, margin: 0 }}>
+      <tr className="result" style={{ padding: 0, margin: 0 }}>
         <td style={{ padding: 0, margin: 0 }}>{listData.id}</td>
         <td style={{ padding: 0, margin: 0 }}>{listData.snack}</td>
         <td>{listData.brand}</td>
@@ -22,6 +24,7 @@ const SnackBoard = () => {
       </tr>
     )
   }
+
   const getList = async () => {
     try {
       const { data } = await axios.get('http://localhost:3000/data/snackData.json')
@@ -37,7 +40,7 @@ const SnackBoard = () => {
     return list.slice(offset, offset + limit)
   }
 
-  //검색 기능
+  // 검색기능
   const filterList = list.filter((item) => {
     const target = item[searchType]
     return String(target).includes(searchName)
@@ -49,40 +52,42 @@ const SnackBoard = () => {
   }
 
   // 페이지네이션 컴포넌트
-  const Pagination = ({ total, limit, page, setPage }) => {
+  const Pagination = ({ total, limit, page }) => {
     const numPage = Math.ceil(total / limit)
     return (
-      <div className="select pagination">
-        <button onClick={() => setPage(page - 1)} disabled={page === 1}>
+      <div className="pagination">
+        <Link
+          className={`pagination-link ${page === '1' ? 'disabled' : ''}`}
+          to={`/snack-board/${parseInt(page, 10) - 1}`}
+        >
           &lt;
-        </button>
+        </Link>
         {Array(numPage)
           .fill()
           .map((_, i) => (
-            <button
+            <Link
+              to={`/snack-board/${i + 1}`}
               key={i + 1}
-              onClick={() => setPage(i + 1)}
-              aria-current={page === i + 1 ? 'page' : undefined}
+              className={`pagination-link ${page === `${i + 1}` ? 'active' : ''}`}
             >
               {i + 1}
-            </button>
+            </Link>
           ))}
-        <button onClick={() => setPage(page + 1)} disabled={page === numPage}>
+        <Link
+          className={`pagination-link ${page === `${numPage}` ? 'disabled' : ''}`}
+          to={`/snack-board/${parseInt(page, 10) + 1}`}
+        >
           &gt;
-        </button>
+        </Link>
       </div>
     )
   }
 
-  // 리스트 수 조절 컴포넌트
+  //리스트 수 조절 컴포넌트
   const SelectNum = () => {
     return (
       <label>
-        <select
-          className="select"
-          value={limit}
-          onChange={({ target: { value } }) => setLimit(Number(value))}
-        >
+        <select value={limit} onChange={({ target: { value } }) => setLimit(Number(value))}>
           <option value="5">5개 보기</option>
           <option value="10">10개 보기</option>
           <option value="15">15개 보기</option>
@@ -92,9 +97,14 @@ const SnackBoard = () => {
     )
   }
 
+  // 랜더
   useEffect(() => {
+    if (page > Math.ceil(total / limit)) {
+      const newPage = Math.max(1, Math.ceil(total / limit))
+      navigate(`/snack-board/${newPage}`, { replace: true })
+    }
     getList()
-  }, [])
+  }, [total, page, limit, navigate])
 
   return (
     <div className="board">
@@ -110,9 +120,9 @@ const SnackBoard = () => {
               <th>별점</th>
             </tr>
           </thead>
-          <tbody style={{ textAlign: 'center' }}>
+          <tbody>
             {filteredList.length === 0 ? (
-              <tr>
+              <tr className="no-result">
                 <td>검색 결과가 없습니다.</td>
               </tr>
             ) : (
@@ -121,7 +131,7 @@ const SnackBoard = () => {
           </tbody>
         </table>
       </div>
-      <Pagination total={total} limit={limit} page={page} setPage={setPage} />
+      <Pagination total={total} limit={limit} page={page} />
       <label>
         <select
           className="select"
