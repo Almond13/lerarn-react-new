@@ -13,9 +13,9 @@ const SnackBoard = () => {
 
   const Lists = ({ listData }) => {
     return (
-      <tr>
-        <td>{listData.id}</td>
-        <td>{listData.snack}</td>
+      <tr style={{ padding: 0, margin: 0 }}>
+        <td style={{ padding: 0, margin: 0 }}>{listData.id}</td>
+        <td style={{ padding: 0, margin: 0 }}>{listData.snack}</td>
         <td>{listData.brand}</td>
         <td>{listData.content}</td>
         <td>{listData.star}</td>
@@ -52,7 +52,7 @@ const SnackBoard = () => {
   const Pagination = ({ total, limit, page, setPage }) => {
     const numPage = Math.ceil(total / limit)
     return (
-      <div className="select">
+      <div className="select pagination">
         <button onClick={() => setPage(page - 1)} disabled={page === 1}>
           &lt;
         </button>
@@ -97,31 +97,34 @@ const SnackBoard = () => {
   }, [])
 
   return (
-    <div className="App">
+    <div className="board">
       <SelectNum />
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>과자 이름</th>
-            <th>브랜드</th>
-            <th>평가</th>
-            <th>별점</th>
-          </tr>
-        </thead>
-        <tbody style={{ textAlign: 'center' }}>
-          {filteredList.length === 0 ? (
+      <div className="table-container">
+        <table>
+          <thead>
             <tr>
-              <td>검색 결과가 없습니다.</td>
+              <th>ID</th>
+              <th>과자 이름</th>
+              <th>브랜드</th>
+              <th>평가</th>
+              <th>별점</th>
             </tr>
-          ) : (
-            sliceList(filteredList).map((item) => <Lists listData={item} key={item.id} />)
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody style={{ textAlign: 'center' }}>
+            {filteredList.length === 0 ? (
+              <tr>
+                <td>검색 결과가 없습니다.</td>
+              </tr>
+            ) : (
+              sliceList(filteredList).map((item) => <Lists listData={item} key={item.id} />)
+            )}
+          </tbody>
+        </table>
+      </div>
       <Pagination total={total} limit={limit} page={page} setPage={setPage} />
       <label>
         <select
+          className="select"
           value={searchType}
           onChange={({ target: { value } }) => {
             setSearchType(String(value))

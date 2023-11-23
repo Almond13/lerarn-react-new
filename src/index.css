@@ -16,6 +16,29 @@ code {
   padding: 20px;
 }
 
-.select {
-  margin: 10px 0;
+.board{
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: 1fr 3fr 1fr 1fr;
 }
+
+.board label {
+  justify-self: end;
+}
+
+.board .pagination {
+  justify-self: center;
+}
+
+.table-container {
+  display: grid;
+}
+
+.board .select {
+  margin: 10px 5px 10px 0;
+}
+
+.board button {
+  margin: 0 3px;
+}
+
