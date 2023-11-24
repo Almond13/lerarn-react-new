@@ -99,12 +99,15 @@ const SnackBoard = () => {
 
   // 랜더
   useEffect(() => {
+    getList()
+  }, [])
+
+  useEffect(() => {
     if (page > Math.ceil(total / limit)) {
       const newPage = Math.max(1, Math.ceil(total / limit))
       navigate(`/snack-board/${newPage}`, { replace: true })
     }
-    getList()
-  }, [page, limit, navigate])
+  }, [total, page, limit, navigate])
 
   return (
     <div className="board">
