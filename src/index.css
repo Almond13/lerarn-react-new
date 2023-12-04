@@ -14,4 +14,86 @@ code {
 
 .App {
   padding: 20px;
+  display: grid;
+  grid-template-columns: 25% 75%
+}
+
+/*navigation 컴포넌트 레이아웃*/
+nav {
+  display: grid;
+  grid-template-rows: 50px 1fr;
+}
+
+/*current path 스타일*/
+nav > div:first-child{
+  align-self: center;
+  margin: 0 auto;
+}
+
+/*navigation Link 스타일*/
+.nav-link {
+ align-self: start;
+}
+
+.nav-link a{
+  font-size: 1.1em;
+}
+
+.nav-link, .nav-link-child{
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-link a, .nav-link-child a{
+  padding: 5px 10px;
+  text-decoration: none;
+  color: #000;
+}
+
+.nav-link a:hover, .nav-link-child a:hover{
+  background-color: #e2e2e2;
+  color: #444;
+  font-weight: 500;
+}
+
+/*버튼 스타일*/
+.nav-container button {
+  cursor: pointer;
+  padding: 0;
+  align-items: center;
+  width: 25px;
+  border: 0;
+  background-color: inherit;
+}
+
+.nav-container button span {
+  display:block;
+  background-color: #444;
+  padding: 1px;
+  margin: 3px;
+  border-radius: 20%;
+}
+
+@media (max-width: 900px){
+  .App{
+    padding: 10px;
+    grid-template-columns: 100%;
+  }
+  nav {
+    grid-template-rows: 50px 1fr;
+
+  }
+  nav > div:first-child{
+    margin: 0 10px;
+    justify-self: start;
+  }
+  nav > div:first-child h2{
+    font-size: 20px;
+  }
+  .nav-container.active {
+    grid-template-columns: 100%;
+  }
+  .main-content.active{
+    display: none;
+  }
 }
