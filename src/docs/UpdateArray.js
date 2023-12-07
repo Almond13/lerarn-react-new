@@ -63,37 +63,10 @@ let nextId = 0
 const AddingList = () => {
   const [name, setName] = useState('')
   const [artists, setArtists] = useState([])
-  // const pushArray = (
-  //   <>
-  //     <pre>
-  //       <code>
-  //         {`<button
-  //       onClick={() => {
-  //         artists.push({
-  //           id: nextId++,
-  //           name: name
-  //         })
-  //       }}
-  //     >`}
-  //       </code>
-  //     </pre>
-  //     <p>위의 push 대신 ... array spread 구문을 사용함 </p>
-  //     <pre>
-  //       <code>
-  //         {`<button
-  //       onClick={() => {
-  //         setArtists([...artists, { id: nextId++, name: name }])
-  //       }}
-  //     >`}
-  //       </code>
-  //     </pre>
-  //   </>
-  // )
 
   return (
     <>
       <h1>Adding to an array</h1>
-      {/*{pushArray}*/}
       <h3>Inspiring sculptors:</h3>
       <input value={name} onChange={(e) => setName(e.target.value)} />
       {/*push 대신 ...array spread 구문을 사용 함*/}
@@ -109,6 +82,8 @@ const AddingList = () => {
         onClick={() => {
           // 배열의 시작 부분 부터 추가 됨
           // setArtists([{ id: nextId++, name: name }, ...artists])
+
+          // 배열의 끝 부터 추가됨
           setArtists([...artists, { id: nextId++, name: name }])
         }}
       >
@@ -250,6 +225,79 @@ const CounterList = () => {
   )
 }
 
+// Inserting into an array
+let afterId = 3
+const insertArtists = [
+  { id: 0, name: 'Marta Colvin Andrade' },
+  { id: 1, name: 'Lamidi Olonade Fakeye' },
+  { id: 2, name: 'Louise Nevelson' }
+]
+const InsertList = () => {
+  const [name, setName] = useState('')
+  const [artists, setArtists] = useState(insertArtists)
+
+  function handleClick() {
+    const insertAt = 1
+    // array.slice[startIndex, endIndex] => startIndex를 포함해 startIndex부터 endIndex 전까지 잘라냄
+    const nextArtists = [
+      // 0부터 insertAt(1) 전까지 자르며 index가 0인 부분만 잘라낸다고 볼수있음
+      ...artists.slice(0, insertAt),
+      // 배열 사이에 새로운 item을 insert하며 id는 3에서부터 1씩 증가
+      { id: afterId++, name: name },
+      // 기존 index가 1 부터는 항상 새롭게 insert된 item뒤에 출력됨, 즉 새 item은 항상 index가 1이며 기존 index가 1인 item들은 뒤로 밀려난다.
+      ...artists.slice(insertAt)
+    ]
+    setArtists(nextArtists)
+    setName('')
+    console.log(afterId, nextArtists)
+  }
+
+  return (
+    <>
+      <h1>Inserting into an array</h1>
+      <h3>Inspiring sculptors:</h3>
+      <input value={name} onChange={(e) => setName(e.target.value)} />
+      <button onClick={handleClick}>Insert</button>
+      <ul>
+        {artists.map((artist) => (
+          <li key={artist.id}>{artist.name}</li>
+        ))}
+      </ul>
+    </>
+  )
+}
+
+// Making other changes to an array
+// reverse나 sort같은 매서드는 원래 배열을 변경하므로 직접 사용할 수는 없으나 먼저 배열을 복사한 다음 변경할 수 있음
+// 얕은 복사이기 때문에 배열을 복사하더라도 배열 내부의 기존 항목을 직접 변경할 수 없음
+// list와 nextList는 결국 otherList라는 동일한 객체를 가르키고 있기 때문임
+const otherList = [
+  { id: 0, title: 'Big Bellies' },
+  { id: 1, title: 'Lunar Landscape' },
+  { id: 2, title: 'Terracotta Army' }
+]
+const OtherList = () => {
+  const [list, setList] = useState(otherList)
+
+  function handleClick() {
+    const nextList = [...list]
+    nextList.reverse()
+    setList(nextList)
+  }
+
+  return (
+    <>
+      <h1>Making other changes to an array</h1>
+      <button onClick={handleClick}>Reverse</button>
+      <ul>
+        {list.map((artwork) => (
+          <li key={artwork.id}>{artwork.title}</li>
+        ))}
+      </ul>
+    </>
+  )
+}
+
 const UpdateArray = () => {
   return (
     <>
@@ -271,6 +319,8 @@ const UpdateArray = () => {
       <RemovingList />
       <ShapeEditor />
       <CounterList />
+      <InsertList />
+      <OtherList />
     </>
   )
 }
