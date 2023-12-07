@@ -12,6 +12,7 @@ import StateComponent from './docs/StateComponent'
 import StateSnapshot from './docs/StateSnapshot'
 import QueueingState from './docs/QueueingState'
 import UpdateObject from './docs/UpdateObject'
+import UpdateArray from './docs/UpdateArray'
 
 const reactIntroduction = (
   <>
@@ -30,6 +31,7 @@ const docsInteractivity = (
     <Link to="/react-docs-interactivity/state-snapshot">State Snapshot</Link>
     <Link to="/react-docs-interactivity/queueing-state">Queueing State</Link>
     <Link to="/react-docs-interactivity/update-object">Update Object</Link>
+    <Link to="/react-docs-interactivity/update-array">Update Array</Link>
   </>
 )
 
@@ -61,18 +63,24 @@ const Navigation = () => {
 }
 
 const NavContainer = ({ active, setActive }) => {
+  return (
+    <div className={`nav-container ${active ? 'active' : 'inactive'}`}>
+      {active && <Navigation />}
+    </div>
+  )
+}
+
+const HeaderBtn = ({ active, setActive }) => {
   const handleBtn = () => {
     setActive(!active)
   }
-
   return (
-    <div className={`nav-container ${active ? 'active' : ''}`}>
+    <div className="header-btn">
       <button onClick={handleBtn}>
         <span></span>
         <span></span>
         <span></span>
       </button>
-      {active && <Navigation />}
     </div>
   )
 }
@@ -80,25 +88,29 @@ function App() {
   const [active, setActive] = useState(true)
   return (
     <div className="App">
-      <NavContainer active={active} setActive={setActive} />
-      <div className={`main-content ${active ? 'active' : ''}`}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/react-introduction" element={<Outlet />}>
-            <Route path="about" element={<About />} />
-            <Route path="counter" element={<Counter />} />
-            <Route path="input" element={<Input />} />
-            <Route path="input2" element={<Input2 />} />
-            <Route path="list" element={<List />} />
-          </Route>
-          <Route path="/react-docs-interactivity" element={<Outlet />}>
-            <Route path="responding-events" element={<RespondingEvents />} />
-            <Route path="state-component" element={<StateComponent />} />
-            <Route path="state-snapshot" element={<StateSnapshot />} />
-            <Route path="queueing-state" element={<QueueingState />} />
-            <Route path="update-object" element={<UpdateObject />} />
-          </Route>
-        </Routes>
+      <HeaderBtn active={active} setActive={setActive} />
+      <div className={`contents ${active ? 'active' : 'inactive'}`}>
+        <NavContainer active={active} setActive={setActive} />
+        <div className={`main-content ${active ? 'active' : 'inactive'}`}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/react-introduction" element={<Outlet />}>
+              <Route path="about" element={<About />} />
+              <Route path="counter" element={<Counter />} />
+              <Route path="input" element={<Input />} />
+              <Route path="input2" element={<Input2 />} />
+              <Route path="list" element={<List />} />
+            </Route>
+            <Route path="/react-docs-interactivity" element={<Outlet />}>
+              <Route path="responding-events" element={<RespondingEvents />} />
+              <Route path="state-component" element={<StateComponent />} />
+              <Route path="state-snapshot" element={<StateSnapshot />} />
+              <Route path="queueing-state" element={<QueueingState />} />
+              <Route path="update-object" element={<UpdateObject />} />
+              <Route path="update-array" element={<UpdateArray />} />
+            </Route>
+          </Routes>
+        </div>
       </div>
     </div>
   )

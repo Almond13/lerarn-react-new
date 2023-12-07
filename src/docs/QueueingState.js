@@ -1,5 +1,4 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 // Updating the same state multiple times before the next render
 // 동일한 상태 변수를 다음 렌더링 전에 여러번 업데이트하려는 경우에 사용
@@ -76,9 +75,9 @@ const naming = (
     <h1>Naming conventions</h1>
     <p>해당 상태 변수의 첫 글자로 업데이트 함수 인수의 이름을 지정하는 것이 일반적</p>
     <code>
-      {`setEnabled((e) => !e)\n`}
-      {`setLastName((ln) => ln.reverse())\n`}
-      {`setFriendCount(fc => fc * 2)`}
+      setEnabled((e) => !e) <br />
+      setLastName((ln) => ln.reverse()) <br />
+      setFriendCount(fc => fc * 2)
     </code>
     <p>자세한 코드를 사용하고 싶다면 전체 상태 변수의 이름을 반복하거나 접두사를 사용</p>
     <code>
