@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useImmer } from 'use-immer'
 
 //Updating arrays without mutation
 const arrayMutation = (
@@ -140,20 +141,33 @@ let initialShapes = [
 const ShapeEditor = () => {
   const [shapes, setShapes] = useState(initialShapes)
   function handleClick() {
-    const nextShapes = shapes.map((shape) => {
-      if (shape.type === 'square') {
-        // 타입이 square일 경우 변화 없음
-        return shape
-      } else {
-        return {
-          // new circle에 y + 50한 값이 반환됨
-          ...shape,
-          y: shape.y + 50
+    // const nextShapes = shapes.map((shape) => {
+    //   if (shape.type === 'square') {
+    //     // 타입이 square일 경우 변화 없음
+    //     return shape
+    //   } else {
+    //     return {
+    //       // new circle에 y + 50한 값이 반환됨
+    //       ...shape,
+    //       y: shape.y + 50
+    //     }
+    //   }
+    // })
+    // // 새로운 배열로 다시 랜더
+    // setShapes(nextShapes)
+    // 위의 함수를 아래 함수와 같이 단일 함수로 만들 수 있음
+    setShapes(
+      shapes.map((shape) => {
+        if (shape.type === 'square') {
+          return shape
+        } else {
+          return {
+            ...shape,
+            y: shape.y + 50
+          }
         }
-      }
-    })
-    // 새로운 배열로 다시 랜더
-    setShapes(nextShapes)
+      })
+    )
   }
   return (
     <>
@@ -298,6 +312,132 @@ const OtherList = () => {
   )
 }
 
+// Updating objects inside
+// 얕은 복사를 사용하면 동일하게 initialList를 가르키기 때문에 새로운 객체를 만들고 그 객체에 변경내용을 담아야함
+const initialList = [
+  { id: 0, title: 'Big Bellies', seen: false },
+  { id: 1, title: 'Lunar Landscape', seen: false },
+  { id: 2, title: 'Terracotta Army', seen: true }
+]
+const BucketList = () => {
+  const [myList, setMyList] = useState(initialList)
+  const [yourList, setYourList] = useState(initialList)
+
+  function handleToggleMyList(artworkId, nextSeen) {
+    // myNextList로 새로운 배열을 만들고 새로운 배열의 'seen' 속성을 직접 변경함
+    // const myNextList = [...myList]
+    // myNextList의 배열의 각 요소룰 a에 담고 해당 요소의 id가 artworkId와 일치하는지 찾아 반환함
+    // const artwork = myNextList.find((a) => a.id === artworkId)
+    // artwork.seen = nextSeen
+    // setMyList(myNextList)
+
+    // map으로 새로운 배열(artwork)를 생성하고 기존 atwork의 속성들을 새로운 객체에 복사하고 seen속성만 변경한 새로운 객체를 반환
+    // 방금 만든 개체만 변경해야 함
+    setMyList(
+      myList.map((artwork) => {
+        if (artwork.id === artworkId) {
+          return { ...artwork, seen: nextSeen }
+        } else {
+          return artwork
+        }
+      })
+    )
+  }
+
+  function handleToggleYourList(artworkId, nextSeen) {
+    const yourNextList = [...yourList]
+    const artwork = yourNextList.find((a) => a.id === artworkId)
+    artwork.seen = nextSeen
+    setYourList(yourNextList)
+  }
+
+  // artworks는 List, onToggle은 handle함수와 대치된다.
+  function ItemList({ artworks, onToggle }) {
+    return (
+      <ul>
+        {artworks.map((artwork) => (
+          <li key={artwork.id}>
+            <label>
+              <input
+                type="checkbox"
+                checked={artwork.seen}
+                onChange={(e) => {
+                  onToggle(artwork.id, e.target.checked)
+                }}
+              />
+              {artwork.title}
+            </label>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
+  return (
+    <>
+      <h1>Updating objects inside arrays</h1>
+      <h2>Art Bucket List</h2>
+      <h3>My list of art to see:</h3>
+      <ItemList artworks={myList} onToggle={handleToggleMyList} />
+      <h3>Your list of art to see:</h3>
+      <ItemList artworks={yourList} onToggle={handleToggleYourList} />
+    </>
+  )
+}
+
+// Write concise update logic with Immer
+// Immer는 편리한 변경 문법을 사용하면서 복사본을 생성하는 작업을 자동으로 처리함
+const ImmerBucketList = () => {
+  const [myList, updateMyList] = useImmer(initialList)
+  const [yourList, updateYourList] = useImmer(initialList)
+
+  function handleToggleMyList(id, nextSeen) {
+    updateMyList((draft) => {
+      const artwork = draft.find((a) => a.id === id)
+      artwork.seen = nextSeen
+    })
+  }
+
+  function handleToggleYourList(id, nextSeen) {
+    updateYourList((draft) => {
+      const artwork = draft.find((a) => a.id === id)
+      artwork.seen = nextSeen
+    })
+  }
+
+  function ItemList({ artworks, onToggle }) {
+    return (
+      <ul>
+        {artworks.map((artwork) => (
+          <li key={artwork.id}>
+            <label>
+              <input
+                type="checkbox"
+                checked={artwork.seen}
+                onChange={(e) => {
+                  onToggle(artwork.id, e.target.checked)
+                }}
+              />
+              {artwork.title}
+            </label>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
+  return (
+    <>
+      <h1>Write concise update logic with Immer</h1>
+      <h2>Art Bucket List</h2>
+      <h3>My list of art to see:</h3>
+      <ItemList artworks={myList} onToggle={handleToggleMyList} />
+      <h3>Your list of art to see:</h3>
+      <ItemList artworks={yourList} onToggle={handleToggleYourList} />
+    </>
+  )
+}
+
 const UpdateArray = () => {
   return (
     <>
@@ -321,6 +461,8 @@ const UpdateArray = () => {
       <CounterList />
       <InsertList />
       <OtherList />
+      <BucketList />
+      <ImmerBucketList />
     </>
   )
 }
