@@ -13,6 +13,7 @@ import StateSnapshot from './docs/StateSnapshot'
 import QueueingState from './docs/QueueingState'
 import UpdateObject from './docs/UpdateObject'
 import UpdateArray from './docs/UpdateArray'
+import PassingComponent from './docs/PassingComponent'
 
 const reactIntroduction = (
   <>
@@ -32,6 +33,12 @@ const docsInteractivity = (
     <Link to="/react-docs-interactivity/queueing-state">Queueing State</Link>
     <Link to="/react-docs-interactivity/update-object">Update Object</Link>
     <Link to="/react-docs-interactivity/update-array">Update Array</Link>
+  </>
+)
+
+const docsDescribing = (
+  <>
+    <Link to="/react-docs-describing/passing-component">Passing Component</Link>
   </>
 )
 
@@ -56,6 +63,10 @@ const Navigation = () => {
         <Link to="/react-docs-interactivity">React Docs - Interactivity</Link>
         {location.pathname.startsWith('/react-docs-interactivity') && (
           <div className="nav-link-child">{docsInteractivity}</div>
+        )}
+        <Link to="/react-docs-describing">React Docs - Describing</Link>
+        {location.pathname.startsWith('/react-docs-describing') && (
+          <div className="nav-link-child">{docsDescribing}</div>
         )}
       </div>
     </nav>
@@ -108,6 +119,9 @@ function App() {
               <Route path="queueing-state" element={<QueueingState />} />
               <Route path="update-object" element={<UpdateObject />} />
               <Route path="update-array" element={<UpdateArray />} />
+            </Route>
+            <Route path="/react-docs-describing" element={<Outlet />}>
+              <Route path="passing-component" element={<PassingComponent />} />
             </Route>
           </Routes>
         </div>
