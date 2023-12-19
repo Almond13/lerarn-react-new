@@ -11,6 +11,18 @@ function App() {
     const [data, setData] = useState(null)
     const [loading, setLoading] = useState(false)
 
+    const getBaseDate = () => {
+      const today = new Date()
+      const yesterday = new Date(today.setDate(today.getDate() - 1))
+
+      const year = yesterday.getFullYear()
+      const month = (yesterday.getMonth() + 1).toString().padStart(2, '0')
+      const day = today.getDate().toString().padStart(2, '0')
+
+      return `${year + month + day}`
+    }
+    const currentBaseDate = getBaseDate()
+
     useEffect(() => {
       // API 데이터 호출
       const fetchData = async () => {
@@ -22,9 +34,9 @@ function App() {
               numOfRows: 290,
               dataType: 'JSON',
               pageNo: 1,
-              base_date: 20231213,
-              base_time: 1100,
-              nx: 55,
+              base_date: currentBaseDate,
+              base_time: '2300',
+              nx: 190,
               ny: 127
             }
           })
@@ -39,27 +51,11 @@ function App() {
 
     // 데이터 필터
     const weatherValue = data?.response?.body?.items?.item?.map((item) => item) || []
-    const selectCategories = ['POP', 'PCP', 'TMP', 'WSD']
-    const tmnCategory = ['TMN']
-    const tmxCategory = ['TMX']
+    const selectCategories = ['TMP', 'WSD', 'POP', 'PCP', 'TMN', 'TMX']
 
     const filteredWeatherValue = weatherValue.filter((item) =>
       selectCategories.includes(item.category)
     )
-
-    const tmnValues = weatherValue.filter((item) => tmnCategory.includes(item.category))
-
-    const tmxValues = weatherValue.filter((item) => tmxCategory.includes(item.category))
-
-    const tmnValue = tmnValues.map((value) => value.fcstValue)
-    const tmxValue = tmxValues.map((value) => value.fcstValue)
-
-    // 데이터 그룹화
-    const groupByTime = {}
-    for (const content of [...filteredWeatherValue]) {
-      const key = content.fcstTime
-      groupByTime[key] = [...(groupByTime[key] || []), content]
-    }
 
     // 로딩 설정
     if (loading) {
@@ -69,40 +65,27 @@ function App() {
       return null
     }
 
-    return (
-      <div>
-        <p>
-          {tmnValue} / {tmxValue}
-        </p>
-        {Object.entries(groupByTime).map(([fcstTime, group]) => (
-          <div key={fcstTime}>
-            <h2>fcstTime: {fcstTime}</h2>
-            {group.map((content) => (
-              <WeatherItem
-                key={content.category + content.baseDate + content.fcstTime}
-                data={content}
-              />
-            ))}
-          </div>
-        ))}
-        {/*{filteredWeatherValue.map((content) => (*/}
-        {/*  <WeatherItem*/}
-        {/*    key={content.category + content.baseDate + content.fcstTime}*/}
-        {/*    data={content}*/}
-        {/*  />*/}
-        {/*))}*/}
-      </div>
-    )
+    return <DailyWeatherData data={filteredWeatherValue} />
   }
 
-  const WeatherItem = ({ data }) => {
-    const { fcstValue, category, fcstTime } = data
+  const DailyWeatherData = ({ data }) => {
+    // 데이터 그릅화 & 형태 변경
+    const formattedWeatherData = []
+    for (const item of data) {
+      const { fcstDate, fcstTime, category, fcstValue } = item
 
-    function redefinedValue() {
+      if (!formattedWeatherData[fcstDate + fcstTime]) {
+        formattedWeatherData[fcstDate + fcstTime] = { fcstDate, fcstTime }
+      }
+
+      formattedWeatherData[fcstDate + fcstTime][category] = redefinedValue(category, fcstValue)
+    }
+    const weatherData = Object.values(formattedWeatherData)
+
+    // 출력 형식 정의
+    function redefinedValue(category, fcstValue) {
       if (category === 'POP') {
         return fcstValue + '%'
-      } else if (category === 'PCP' && fcstValue !== '강수없음') {
-        return fcstValue + 'mm'
       } else if (category === 'TMP' || category === 'TMN' || category === 'TMX') {
         return fcstValue + `\u00B0`
       } else if (category === 'WSD') {
@@ -112,7 +95,42 @@ function App() {
       }
     }
 
-    return <p>{redefinedValue(fcstValue)}</p>
+    // 최저 & 최고 온도 필터
+    const averageData = weatherData.filter((item) => item.TMN || item.TMX)
+    const minItem = averageData.map((item) => item.TMN)
+    const maxItem = averageData.map((item) => item.TMX)
+
+    // 최저 & 최고 온도 컴포넌트
+    const AverageItem = ({ minItem, maxItem }) => (
+      <p>
+        {minItem} / {maxItem}
+      </p>
+    )
+
+    // 날씨 컴포넌트
+    const WeatherItem = ({ item }) => (
+      <div key={item.fcstDate + item.fcstTime}>
+        <p>{item.fcstDate}</p>
+        <p>{item.fcstTime}</p>
+        <p>{item.TMP}</p>
+        <p>{item.WSD}</p>
+        <p>{item.POP}</p>
+        <p>{item.PCP}</p>
+      </div>
+    )
+
+    return (
+      <div>
+        <div>
+          <AverageItem minItem={minItem} maxItem={maxItem} />
+        </div>
+        <div>
+          {weatherData.map((item) => (
+            <WeatherItem key={item.fcstDate + item.fcstTime} item={item} />
+          ))}
+        </div>
+      </div>
+    )
   }
 
   return (
