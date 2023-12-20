@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Routes, Route, Link, json } from 'react-router-dom'
 import axios from 'axios'
-import Home from './pages/Home'
+import SearchLocation from './pages/SearchLocation'
 
 function App() {
   const DailyWeatherContents = () => {
@@ -36,8 +35,8 @@ function App() {
               pageNo: 1,
               base_date: currentBaseDate,
               base_time: '2300',
-              nx: 190,
-              ny: 127
+              nx: gridX,
+              ny: gridY
             }
           })
           setData(response.data)
@@ -47,7 +46,7 @@ function App() {
         setLoading(false)
       }
       fetchData()
-    }, [])
+    }, [currentBaseDate])
 
     // 데이터 필터
     const weatherValue = data?.response?.body?.items?.item?.map((item) => item) || []
@@ -133,9 +132,13 @@ function App() {
     )
   }
 
+  const [gridX, setGridX] = useState('60')
+  const [gridY, setGridY] = useState('127')
+
   return (
     <div className="App">
       <div>
+        <SearchLocation gridSet={{ setGridX, setGridY }} />
         <DailyWeatherContents />
       </div>
     </div>
