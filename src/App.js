@@ -33,8 +33,8 @@ function App() {
               numOfRows: 290,
               dataType: 'JSON',
               pageNo: 1,
-              base_date: currentBaseDate,
-              base_time: '2300',
+              base_date: 20231219,
+              base_time: '2000',
               nx: gridX,
               ny: gridY
             }
@@ -50,7 +50,7 @@ function App() {
 
     // 데이터 필터
     const weatherValue = data?.response?.body?.items?.item?.map((item) => item) || []
-    const selectCategories = ['TMP', 'WSD', 'POP', 'PCP', 'TMN', 'TMX']
+    const selectCategories = ['TMP', 'WSD', 'SKY', 'PTY', 'POP', 'PCP', 'SNO', 'TMN', 'TMX']
 
     const filteredWeatherValue = weatherValue.filter((item) =>
       selectCategories.includes(item.category)
@@ -89,9 +89,66 @@ function App() {
         return fcstValue + `\u00B0`
       } else if (category === 'WSD') {
         return fcstValue + 'm/s'
+      } else if (category === 'SKY') {
+        if (fcstValue === '1') {
+          return '맑음'
+        } else if (fcstValue === '3') {
+          return '구름 많음'
+        } else if (fcstValue === '4') {
+          return '흐림'
+        } else {
+          return fcstValue
+        }
+      } else if (category === 'PTY') {
+        if (fcstValue === '0') {
+          return '없음'
+        } else if (fcstValue === '1') {
+          return '비'
+        } else if (fcstValue === '2') {
+          return '비 또는 눈'
+        } else if (fcstValue === '3') {
+          return '눈'
+        } else if (fcstValue === '4') {
+          return '소나기'
+        } else {
+          return fcstValue
+        }
       } else {
         return fcstValue
       }
+    }
+
+    // 강수량과 적설량 출력 여부 정의
+    function renderAmount(item) {
+      if (item.PCP !== '강수없음') {
+        return <p>{item.PCP}</p>
+      }
+
+      if (item.SNO !== '적설없음') {
+        return <p>{item.SNO}</p>
+      }
+
+      if (item.PCP !== '강수없음' && item.SNO !== '적설없음') {
+        return (
+          <p>
+            {item.PCP} / {item.SNO}
+          </p>
+        )
+      }
+
+      return null
+    }
+
+    function renderState(item) {
+      if (item.PTY === '없음') {
+        return <p>{item.SKY}</p>
+      }
+
+      return (
+        <p>
+          {item.SKY} / {item.PTY}
+        </p>
+      )
     }
 
     // 최저 & 최고 온도 필터
@@ -111,10 +168,11 @@ function App() {
       <div key={item.fcstDate + item.fcstTime}>
         <p>{item.fcstDate}</p>
         <p>{item.fcstTime}</p>
+        {renderState(item)}
         <p>{item.TMP}</p>
         <p>{item.WSD}</p>
         <p>{item.POP}</p>
-        <p>{item.PCP}</p>
+        {renderAmount(item)}
       </div>
     )
 
