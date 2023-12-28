@@ -1,6 +1,8 @@
+@import url('styles/fonts.css');
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: -apple-system, BlinkMacSystemFont,'Noto Sans KR','Roboto', 'Segoe UI', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -14,4 +16,9 @@ code {
 
 .App {
   padding: 20px;
+}
+
+a{
+  text-decoration: none;
+  color: inherit;
 }

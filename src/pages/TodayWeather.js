@@ -138,13 +138,9 @@ const TodayWeather = () => {
     function renderState(item) {
       if (item.PTY === '없음') {
         return <p>{item.SKY}</p>
+      } else {
+        return <p>{item.PTY}</p>
       }
-
-      return (
-        <p>
-          {item.SKY} / {item.PTY}
-        </p>
-      )
     }
 
     // 최저 & 최고 온도 필터
