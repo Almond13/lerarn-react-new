@@ -1,31 +1,60 @@
 /*전체 레이아웃 스타일*/
 .layout-container{
     display: flex;
-    height: 100%;
+    height: 100vh;
 }
 
 .right-container{
     position: relative;
+    display: grid;
+    grid-template-rows: 90% 10%;
     height: 100%;
-    min-height: 100vh;
     flex: 1;
-    margin-left: 260px;
+    margin-left: 280px;
     transition: margin-left 0.4s ease
 }
 
 .sidebar-closed .right-container {
-    margin-left: 30px;
+    margin-left: 50px;
 }
 
 .main-content {
-    padding: 30px;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+header h2{
+    text-align: center;
+}
+
+header input{
+    width: 500px;
+    height: 25px;
+    border: 1px solid #ced4da;
+}
+
+header .search-result{
+    z-index: 1000;
+    width: 504px;
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+}
+
+header .search-result span{
+    font-weight: bold;
+    color: #649ded;
 }
 
 footer {
-    position: absolute;
     width: 100%;
-    bottom: 0;
+    padding: 20px 0;
     text-align: center;
+    border-top: 1px solid #ced4da;
+    background-color: #fff;
 }
 
 /*사이드바 스타일*/
@@ -36,7 +65,7 @@ footer {
     bottom:0;
     left: 0;
     transition: 0.4s ease;
-    height: 100%;
+    height: 100vh;
     z-index: 99;
 }
 
@@ -45,6 +74,7 @@ footer {
     display: grid;
     grid-template-rows: 7% 93%;
 }
+
 .sidebar-closed .side-bar-container{
  padding: 10px;
 }

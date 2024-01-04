@@ -1,0 +1,37 @@
+.today-weather-wrap{
+    text-align: center;
+}
+
+.weather-item-wrap{
+    display: flex;
+    flex-direction: row;
+    max-width: 1000px;
+    max-height: 40vh;
+    overflow: auto;
+}
+
+.weather-item{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 70px;
+    border-top: 1px solid #ced4da;
+}
+
+.weather-item div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.weather-item.current {
+    background-color: #b4e5ff;
+}
+
+.label-wrap div:last-child span:first-child{
+    color: #3300ff;
+}
+
+.label-wrap div:last-child span:last-child{
+    color: #ff0000;
+}

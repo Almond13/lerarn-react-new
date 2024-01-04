@@ -1,6 +1,6 @@
 @import url('styles/fonts.css');
 
-body {
+body{
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont,'Noto Sans KR','Roboto', 'Segoe UI', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -15,7 +15,7 @@ code {
 }
 
 .App {
-  padding: 20px;
+  /*padding: 20px;*/
 }
 
 a{

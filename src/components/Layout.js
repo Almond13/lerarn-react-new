@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react'
 import '../styles/layoutCss.css'
 import { Outlet, NavLink, Link } from 'react-router-dom'
+import { useGrid } from '../contexts/GridContext'
+import SearchLocation from './SearchLocation'
 
 const Sidebar = ({ open, setOpen }) => {
   const width = 280
@@ -72,11 +74,16 @@ const Sidebar = ({ open, setOpen }) => {
 
 export default function Layout() {
   const [open, setOpen] = useState(true)
+  const { gridX, setGridX, gridY, setGridY } = useGrid()
+
   return (
     <div className={`layout-container ${open ? 'sidebar-open' : 'sidebar-closed'}`}>
       <Sidebar open={open} setOpen={setOpen} />
       <div className="right-container">
         <div className="main-content">
+          <header>
+            <SearchLocation gridSet={{ setGridX, setGridY }} />
+          </header>
           <Outlet />
         </div>
         <footer>

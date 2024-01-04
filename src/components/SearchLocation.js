@@ -4,6 +4,7 @@ const SearchLocation = ({ gridSet }) => {
   const [coordinateData, setCoordinateData] = useState([])
   const [searchName, setSearchName] = useState('')
   const [filteredData, setFilteredData] = useState([])
+  const [location, setLocation] = useState('서울특별시 종로구')
 
   // 좌표 데이터 호출
   useEffect(() => {
@@ -38,6 +39,7 @@ const SearchLocation = ({ gridSet }) => {
         gridSet.setGridY(selectedData.grid_y)
       ])
       setFilteredData([])
+      setLocation(`${selectedData.first_area} ${selectedData.second_area || ''}`)
     } catch (error) {
       console.error('Error searching location: ', error)
     }
@@ -49,22 +51,16 @@ const SearchLocation = ({ gridSet }) => {
   // regex.test(part) : part(검색 결과의 각 요소)가 regex와 일치하는 부분이 있다면 true, 없다면 false 반환
   const highlightedText = (text, search) => {
     const regex = new RegExp(`(${search})`, 'gi')
-    return text.split(regex).map((part, index) =>
-      regex.test(part) ? (
-        <span key={index} style={{ fontWeight: 'bold', color: 'red' }}>
-          {part}
-        </span>
-      ) : (
-        part
-      )
-    )
+    return text
+      .split(regex)
+      .map((part, index) => (regex.test(part) ? <span key={index}>{part}</span> : part))
   }
 
   return (
     <>
       <input value={searchName} onChange={(e) => setSearchName(e.target.value)} />
       {searchName.length > 1 && filteredData.length > 0 && (
-        <div style={{ zIndex: 1000, position: 'absolute', backgroundColor: 'white' }}>
+        <div className="search-result">
           {filteredData.map((item) => (
             <div key={item.id} onClick={() => handleSelect(item)}>
               {highlightedText(`${item.first_area} ${item.second_area || ''}`, searchName)}
@@ -72,6 +68,7 @@ const SearchLocation = ({ gridSet }) => {
           ))}
         </div>
       )}
+      {location && <h2>{location}</h2>}
     </>
   )
 }
